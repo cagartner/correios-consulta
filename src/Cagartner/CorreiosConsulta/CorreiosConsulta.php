@@ -11,11 +11,11 @@ class CorreiosConsulta
         $endpoint = 'http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx?WSDL';
 
         $tipos = array(
-            'sedex'          => '40010',
+            'sedex'          => '04014',
             'sedex_a_cobrar' => '40045',
             'sedex_10'       => '40215',
             'sedex_hoje'     => '40290',
-            'pac'            => '41106',
+            'pac'            => '04510',
             'pac_contrato'   => '41068',
             'sedex_contrato' => '40096',
             'esedex'         => '81019',
@@ -30,11 +30,11 @@ class CorreiosConsulta
         $dados['tipo']    = $tipos[$dados['tipo']];
         $dados['formato'] = $formatos[$dados['formato']];
         /* dados[tipo]
-        40010 SEDEX Varejo
+        04014 SEDEX Varejo
         40045 SEDEX a Cobrar Varejo
         40215 SEDEX 10 Varejo
         40290 SEDEX Hoje Varejo
-        41106 PAC Varejo
+        04510 PAC Varejo
         */
 
         /*
