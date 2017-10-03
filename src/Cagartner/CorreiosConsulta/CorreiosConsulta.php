@@ -90,8 +90,8 @@ class CorreiosConsulta
          */
 
         /*
-          1 – Formato caixa/pacote
-          2 – Formato rolo/prisma
+          1 é Formato caixa/pacote
+          2 é Formato rolo/prisma
           3 - Envelope
          */
         $dados['cep_destino'] = preg_replace("/[^0-9]/", '', $dados['cep_destino']);
@@ -158,6 +158,37 @@ class CorreiosConsulta
     }
 
     public function cep($cep)
+    {
+        $config  = array(
+            "trace"      => 1,
+            "exception"  => 0,
+            "cache_wsdl" => WSDL_CACHE_MEMORY
+        );
+        $address = __DIR__ . '/../../../public/AtendeCliente.xml';
+        $client  = new \SoapClient($address, $config);
+
+        $dados = array();
+        try
+        {
+            $response = $client->consultaCEP(array('cep' => $cep));
+            $return   = $response->return;
+
+            $dados['cliente']    = "";
+            $dados['logradouro'] = $return->end;
+            $dados['bairro']     = $return->bairro;
+            $dados['cep']        = $return->cep;
+            $dados['cidade']     = $return->cidade;
+            $dados['uf']         = $return->uf;
+        }
+        catch (\Exception $e)
+        {
+            
+        }
+
+        return $dados;
+    }
+
+    public function cep2($cep)
     {
         $data = array(
             'cepEntrada' => $cep,
