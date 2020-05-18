@@ -17,8 +17,10 @@ class CorreiosConsulta
         'sedex_10' => '40215',
         'sedex_hoje' => '40290',
         'pac' => '04510',
-        'pac_contrato' => '04669',
-        'sedex_contrato' => '04162',
+        'pac_contrato_04669' => '04669',
+        'pac_contrato_04596' => '04596',
+        'sedex_contrato_04162' => '04162',
+        'sedex_contrato_04553' => '04553',
         'esedex' => '81019',
     );
 
