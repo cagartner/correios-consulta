@@ -190,6 +190,8 @@ class CorreiosConsulta
                     unset($dados['cidade/uf']);
 
                     $pesquisa = $dados;
+
+                    return $pesquisa;
                 }
 
                 $linha++;
