@@ -176,16 +176,16 @@ class CorreiosConsulta
                         $itens[] = trim($texto);
                     }
                     $dados               = [];
-                    $dados['logradouro'] = trim($itens[0]);
-                    $dados['bairro']     = trim($itens[1]);
-                    $dados['cidade/uf']  = trim($itens[2]);
-                    $dados['cep']        = trim($itens[3]);
+                    $dados['logradouro'] = str_replace(chr(194).chr(160),'',trim($itens[0]));
+                    $dados['bairro']     = str_replace(chr(194).chr(160),'',trim($itens[1]));
+                    $dados['cidade/uf']  = str_replace(chr(194).chr(160),'',trim($itens[2]));
+                    $dados['cep']        = str_replace(chr(194).chr(160),'',trim($itens[3]));
 
                     $dados['cidade/uf'] = explode('/', $dados['cidade/uf']);
 
-                    $dados['cidade'] = trim($dados['cidade/uf'][0]);
+                    $dados['cidade'] = str_replace(chr(194).chr(160),'',trim($dados['cidade/uf'][0]));
 
-                    $dados['uf'] = trim($dados['cidade/uf'][1]);
+                    $dados['uf'] = str_replace(chr(194).chr(160),'',trim($dados['cidade/uf'][1]));
 
                     unset($dados['cidade/uf']);
 
