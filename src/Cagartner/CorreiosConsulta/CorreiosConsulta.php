@@ -8,7 +8,7 @@ use PhpQuery\PhpQuery as phpQuery;
 class CorreiosConsulta
 {
     const FRETE_URL = 'http://ws.correios.com.br/calculador/CalcPrecoPrazo.asmx/CalcPrecoPrazo';
-    const CEP_URL = 'http://www.buscacep.correios.com.br/sistemas/buscacep/resultadoBuscaCepEndereco.cfm';
+    const CEP_URL = 'https://buscacepinter.correios.com.br/app/endereco/carrega-cep-endereco.php';
     const RASTREIO_URL = 'https://www2.correios.com.br/sistemas/rastreamento/resultado_semcontent.cfm';
 
     private static $tipos
@@ -148,54 +148,34 @@ class CorreiosConsulta
     public function cep($cep)
     {
         $data = [
-            'relaxation' => $cep,
-            'tipoCEP'    => 'ALL',
-            'semelhante' => 'N',
+            'pagina' => '/app/endereco/index.php',
+            'cepaux' => '',
+            'mensagem_alerta' => '',
+            'endereco' => $cep,
+            'tipoCEP' => 'ALL'
         ];
 
         $curl = new Curl;
+        $response = $curl->simple(self::CEP_URL, [], $data);
 
-        $html = $curl->simple(self::CEP_URL, $data);
+        $data = [];
+        if($response) {
+            $response = json_decode(json_encode(json_decode($response)));
 
-        phpQuery::newDocumentHTML($html, $charset = 'ISO-8859-1');
-
-        $pq_form  = phpQuery::pq('');
-        $pesquisa = [];
-        if (phpQuery::pq('.tmptabela')) {
-            $linha = 0;
-            foreach (phpQuery::pq('.tmptabela tr') as $pq_div) {
-                if ($linha) {
-                    $itens = [];
-                    foreach (phpQuery::pq('td', $pq_div) as $pq_td) {
-                        $children  = $pq_td->childNodes;
-                        $innerHTML = '';
-                        foreach ($children as $child) {
-                            $innerHTML .= $child->ownerDocument->saveXML($child);
-                        }
-                        $texto   = preg_replace("/&#?[a-z0-9]+;/i", "", $innerHTML);
-                        $itens[] = trim($texto);
-                    }
-                    $dados               = [];
-                    $dados['logradouro'] = trim($itens[0]);
-                    $dados['bairro']     = trim($itens[1]);
-                    $dados['cidade/uf']  = trim($itens[2]);
-                    $dados['cep']        = trim($itens[3]);
-
-                    $dados['cidade/uf'] = explode('/', $dados['cidade/uf']);
-
-                    $dados['cidade'] = trim($dados['cidade/uf'][0]);
-
-                    $dados['uf'] = trim($dados['cidade/uf'][1]);
-
-                    unset($dados['cidade/uf']);
-
-                    $pesquisa = $dados;
-                }
-
-                $linha++;
+            if($response->erro === true) {
+                return [];
             }
+
+            $item = $response->dados[0];
+
+            $data['logradouro'] = trim($item->logradouroDNEC);
+            $data['bairro'] = trim($item->bairro);
+            $data['cep'] = trim($item->cep);
+            $data['cidade'] = trim($item->localidade);
+            $data['uf'] = trim($item->uf);
         }
-        return $pesquisa;
+
+        return $data;
     }
 
     /**
